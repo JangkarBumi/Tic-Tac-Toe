@@ -1,0 +1,16 @@
+.container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  width: 400px;
+  height: 400px;
+  margin:50px auto;
+}
+
+
+span {
+    display: flex;
+  align-items: center;
+  justify-content: center;
+    border: solid red 1px;
+}
