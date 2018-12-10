@@ -15,22 +15,28 @@ const winningMove = [
 
 
 const indvBox = document.querySelectorAll('.box')
+//select all the box
 playGame()
 
 
 function playGame() {
+    document.querySelector(".endgame").style.display = "none";
     originalBoard = Array.from(Array(9).keys());
 //The code above will create an array of nine elements consisting number 0 to 8
     for( let i = 0;i<indvBox.length;i++) {
         indvBox[i].innerText = '';
+        indvBox[i].style.removeProperty('background-color');
         indvBox[i].addEventListener('click', turnClick, false)
     }
 }
 
 function turnClick(box) {
-    turn(box.target.id, HUMAN_PLAYER_SYMBOL)
-    //square.target.id is the id of the target (clicked) box
-    //We call turn inside turnClick becase the turn function can be called either by the human or ai
+    if (typeof originalBoard[box.target.id] === 'number') {
+        turn(box.target.id, HUMAN_PLAYER_SYMBOL)
+        //square.target.id is the id of the target (clicked) box
+        //We call turn inside turnClick becase the turn function can be called either by the human or ai
+        if (!checkTie()) turn(bestSpot(), AI_PLAYER_SYMBOL)
+    }
 }
 
 function turn(squareId, player) {
@@ -85,10 +91,33 @@ function gameOver(gameWon) {
 		indvBox[i].removeEventListener('click', turnClick, false);
     }
     //remove the event listener if someone won
+    declareWinner(gameWon.player == HUMAN_PLAYER_SYMBOL ? "You win!" : "You lose.");
 }
 
+function declareWinner(who) {
+	document.querySelector(".endgame").style.display = "block";
+	document.querySelector(".endgame .text").innerText = who;
+}
 
+function emptySquares() {
+	return originalBoard.filter(s => typeof s == 'number');
+}
 
+function bestSpot() {
+	return emptySquares()[0];
+}
+
+function checkTie() {
+	if (emptySquares().length == 0) {
+		for (var i = 0; i < indvBox.length; i++) {
+			indvBox[i].style.backgroundColor = "green";
+			indvBox[i].removeEventListener('click', turnClick, false);
+		}
+		declareWinner("Tie Game!")
+		return true;
+	}
+	return false;
+}
 
 
 
